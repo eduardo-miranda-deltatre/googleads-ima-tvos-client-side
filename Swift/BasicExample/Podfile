@@ -1,7 +1,13 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
-platform :tvos, '12'
+platform :tvos, '13'
 
 target "BasicExample" do
+  use_frameworks!
+
+end
+
+target "IMAPlugIn" do
+  use_frameworks!
   pod 'GoogleAds-IMA-tvOS-SDK', '~> 4.6.1'
 end
