@@ -28,12 +28,7 @@ public class ImaHandler: NSObject {
     var adsManager: IMAAdsManager?
     var contentPlayhead: IMAAVPlayerContentPlayhead?
     public private(set) var adBreakActive = false
-    
-//    func createContentPlayhead(player: AVPlayer) {
-//        // Set up our content playhead and contentComplete callback.
-//        contentPlayhead = IMAAVPlayerContentPlayhead(avPlayer: player)
-//    }
-    
+      
     public func initializeHandler() {
         adsLoader = IMAAdsLoader(settings: nil)
         adsLoader?.delegate = self
@@ -75,8 +70,7 @@ extension ImaHandler: IMAAdsLoaderDelegate {
 
     public func adsLoader(_ loader: IMAAdsLoader, failedWith adErrorData: IMAAdLoadingErrorData) {
         print("Error loading ads: \(String(describing: adErrorData.adError.message))")
-//      showContentPlayer()
-//      playerViewController.player?.play()
+        delegate?.resumeContent()
     }
 }
 
@@ -98,28 +92,17 @@ extension ImaHandler: IMAAdsManagerDelegate {
       // Fall back to playing content
         print("AdsManager error: \(String(describing: error.message))")
         delegate?.resumeContent()
-//      showContentPlayer()
-//      playerViewController.player?.play()
     }
 
     public func adsManagerDidRequestContentPause(_ adsManager: IMAAdsManager) {
       // Pause the content for the SDK to play ads.
-//      playerViewController.player?.pause()
-//      hideContentPlayer()
-      // Trigger an update to send focus to the ad display container.
-      adBreakActive = true
+        adBreakActive = true
         delegate?.pauseContent()
-        
-//      setNeedsFocusUpdate()
     }
 
     public func adsManagerDidRequestContentResume(_ adsManager: IMAAdsManager) {
       // Resume the content since the SDK is done playing ads (at least for now).
-//      showContentPlayer()
-//      playerViewController.player?.play()
-      // Trigger an update to send focus to the content player.
-      adBreakActive = false
-//      setNeedsFocusUpdate()
+        adBreakActive = false
         delegate?.resumeContent()
     }
 }

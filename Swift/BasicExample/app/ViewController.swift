@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//import AVFoundation
-//import GoogleInteractiveMediaAds
+
 import IMAPlugIn
 import AVKit
 
@@ -22,12 +21,7 @@ class ViewController: UIViewController {//}, IMAAdsLoaderDelegate, IMAAdsManager
   static let ContentURLString =
     "https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8"  //NOLINT
 
-//  var adsLoader: IMAAdsLoader!
-//  var adDisplayContainer: IMAAdDisplayContainer!
-//  var adsManager: IMAAdsManager!
-//  var contentPlayhead: IMAAVPlayerContentPlayhead?
   var playerViewController: AVPlayerViewController!
-//  var adBreakActive = false
     let imaHandler = ImaHandler()
 
   deinit {
@@ -53,8 +47,6 @@ class ViewController: UIViewController {//}, IMAAdsLoaderDelegate, IMAAdsManager
     playerViewController = AVPlayerViewController()
     playerViewController.player = player
 
-//    // Set up our content playhead and contentComplete callback.
-//    contentPlayhead = IMAAVPlayerContentPlayhead(avPlayer: player)
     NotificationCenter.default.addObserver(
       self,
       selector: #selector(ViewController.contentDidFinishPlaying(_:)),
@@ -80,40 +72,21 @@ class ViewController: UIViewController {//}, IMAAdsLoaderDelegate, IMAAdsManager
   }
 
   func setUpAdsLoader() {
-//    adsLoader = IMAAdsLoader(settings: nil)
-//    adsLoader.delegate = self
       imaHandler.initializeHandler()
+      imaHandler.delegate = self
   }
 
   func requestAds() {
-//    // Create ad display container for ad rendering.
-//    adDisplayContainer = IMAAdDisplayContainer(adContainer: self.view, viewController: self)
-//    // Create an ad request with our ad tag, display container, and optional user context.
-//    let request = IMAAdsRequest(
-//      adTagUrl: ViewController.AdTagURLString,
-//      adDisplayContainer: adDisplayContainer,
-//      contentPlayhead: contentPlayhead,
-//      userContext: nil)
-//
-//    adsLoader.requestAds(with: request)
       imaHandler.requestAds(containerView: view, containerViewController: self, player: playerViewController.player! )
   }
 
   @objc func contentDidFinishPlaying(_ notification: Notification) {
-//    adsLoader.contentComplete()
       imaHandler.contentDidFinishPlaying()
   }
 
   // MARK: - UIFocusEnvironment
 
   override var preferredFocusEnvironments: [UIFocusEnvironment] {
-//    if adBreakActive, let adFocusEnvironment = adDisplayContainer?.focusEnvironment {
-//      // Send focus to the ad display container during an ad break.
-//      return [adFocusEnvironment]
-//    } else {
-      // Send focus to the content player otherwise.
-//      return [playerViewController]
-//    }
       if imaHandler.adBreakActive, let adFocusEnvironment = imaHandler.focusEnvironment() {
       // Send focus to the ad display container during an ad break.
       return [adFocusEnvironment]
@@ -122,75 +95,28 @@ class ViewController: UIViewController {//}, IMAAdsLoaderDelegate, IMAAdsManager
       return [playerViewController]
     }
   }
-
-  // MARK: - IMAAdsLoaderDelegate
-
-//  func adsLoader(_ loader: IMAAdsLoader, adsLoadedWith adsLoadedData: IMAAdsLoadedData) {
-//    // Grab the instance of the IMAAdsManager and set ourselves as the delegate.
-//    adsManager = adsLoadedData.adsManager
-//    adsManager.delegate = self
-//    adsManager.initialize(with: nil)
-//  }
-//
-//  func adsLoader(_ loader: IMAAdsLoader, failedWith adErrorData: IMAAdLoadingErrorData) {
-//      print("Error loading ads: \(String(describing: adErrorData.adError.message))")
-//    showContentPlayer()
-//    playerViewController.player?.play()
-//  }
-
-  // MARK: - IMAAdsManagerDelegate
-
-//  func adsManager(_ adsManager: IMAAdsManager, didReceive event: IMAAdEvent) {
-//    switch event.type {
-//    case IMAAdEventType.LOADED:
-//      // Play each ad once it has been loaded.
-//      adsManager.start()
-//    case IMAAdEventType.ICON_FALLBACK_IMAGE_CLOSED:
-//      // Resume playback after the user has closed the dialog.
-//      adsManager.resume()
-//    default:
-//      break
-//    }
-//  }
-//
-//  func adsManager(_ adsManager: IMAAdsManager, didReceive error: IMAAdError) {
-//    // Fall back to playing content
-//      print("AdsManager error: \(String(describing: error.message))")
-//    showContentPlayer()
-//    playerViewController.player?.play()
-//  }
-//
-//  func adsManagerDidRequestContentPause(_ adsManager: IMAAdsManager) {
-//    // Pause the content for the SDK to play ads.
-//    playerViewController.player?.pause()
-//    hideContentPlayer()
-//    // Trigger an update to send focus to the ad display container.
-//    adBreakActive = true
-//    setNeedsFocusUpdate()
-//  }
-//
-//  func adsManagerDidRequestContentResume(_ adsManager: IMAAdsManager) {
-//    // Resume the content since the SDK is done playing ads (at least for now).
-//    showContentPlayer()
-//    playerViewController.player?.play()
-//    // Trigger an update to send focus to the content player.
-//    adBreakActive = false
-//    setNeedsFocusUpdate()
-//  }
 }
 
 extension ViewController: ImaHandlerDelegate {
-    func resumeContent() {
+    func pauseContent() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
         // Pause the content for the SDK to play ads.
-        playerViewController.player?.pause()
-        hideContentPlayer()
-        setNeedsFocusUpdate()
+            self.playerViewController.player?.pause()
+            self.hideContentPlayer()
+        // Trigger an update to send focus to the ad display container.
+            self.setNeedsFocusUpdate()
+        }
     }
     
-    func pauseContent() {
+    func resumeContent() {
         // Resume the content since the SDK is done playing ads (at least for now).
-        showContentPlayer()
-        playerViewController.player?.play()
-        setNeedsFocusUpdate()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.showContentPlayer()
+            self.playerViewController.player?.play()
+            // Trigger an update to send focus to the content player.
+            self.setNeedsFocusUpdate()
+        }
     }
 }
