@@ -48,7 +48,6 @@
 				29B882D02647902183D86371 /* Pods-BasicExample.debug.xcconfig */,
 				3DBC9724AB7AD83E52F0E555 /* Pods-BasicExample.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -321,12 +320,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A395RH55AC;
 				INFOPLIST_FILE = "$(SRCROOT)/app/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "google.Basic-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.ima.basicexample-issue";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5;
 				TARGETED_DEVICE_FAMILY = 3;
@@ -339,12 +339,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A395RH55AC;
 				INFOPLIST_FILE = "$(SRCROOT)/app/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "google.Basic-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.ima.basicexample-issue";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5;
 				TARGETED_DEVICE_FAMILY = 3;
